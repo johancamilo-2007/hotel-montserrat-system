@@ -1,0 +1,69 @@
+# =============================================================================
+# HOTEL MONTSERRAT S.A.S. - DOCKER COMPOSE DE DESARROLLO Y PRODUCCIÓN
+# Orquestación de MySQL 8.0 y Backend Node.js con Red Aislada y Volúmenes
+# Mitigación AppSec: OWASP A05:2021 (Security Misconfiguration)
+# =============================================================================
+
+version: '3.8'
+
+services:
+  db:
+    image: mysql:8.0
+    container_name: montserrat_mysql_db
+    restart: unless-stopped
+    command: >
+      --default-authentication-plugin=caching_sha2_password
+      --character-set-server=utf8mb4
+      --collation-server=utf8mb4_unicode_ci
+      --explicit_defaults_for_timestamp=true
+    environment:
+      MYSQL_ROOT_PASSWORD: ${DB_ROOT_PASSWORD:-Montserrat2026!RootDevSecret}
+      MYSQL_DATABASE: ${DB_NAME:-hotel_montserrat_db}
+      MYSQL_USER: ${DB_USER:-hotel_montserrat_app}
+      MYSQL_PASSWORD: ${DB_PASSWORD:-Montserrat2026!AppPassDev}
+    ports:
+      - "${DB_PORT:-3306}:3306"
+    volumes:
+      - montserrat_mysql_data:/var/lib/mysql
+      - ./hotel_montserrat_db.sql:/docker-entrypoint-initdb.d/01_schema.sql:ro
+    networks:
+      - montserrat_internal_net
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-u", "root", "-p${DB_ROOT_PASSWORD:-Montserrat2026!RootDevSecret}"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 30s
+
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: montserrat_node_app
+    restart: unless-stopped
+    environment:
+      NODE_ENV: production
+      PORT: 4000
+      DB_DRIVER: mysql
+      DB_HOST: db
+      DB_PORT: 3306
+      DB_NAME: ${DB_NAME:-hotel_montserrat_db}
+      DB_USER: ${DB_USER:-hotel_montserrat_app}
+      DB_PASSWORD: ${DB_PASSWORD:-Montserrat2026!AppPassDev}
+      COOKIE_SECRET: ${COOKIE_SECRET:-montserrat_prod_cookie_secret_key_entropy_32_bytes}
+      PASSWORD_PEPPER: ${PASSWORD_PEPPER:-montserrat_prod_pepper_server_side_secret_entropy_67890}
+    ports:
+      - "4000:4000"
+    depends_on:
+      db:
+        condition: service_healthy
+    networks:
+      - montserrat_internal_net
+
+networks:
+  montserrat_internal_net:
+    driver: bridge
+
+volumes:
+  montserrat_mysql_data:
+    driver: local

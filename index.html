@@ -3,377 +3,908 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Hotel Andino S.A.S. - Sistema de Gestion</title>
+    <title>Hotel Montserrat S.A.S. - Sistema de Gestión Hotelera & Restaurante</title>
     <link rel="stylesheet" href="css/styles.css">
-    <!-- Google reCAPTCHA v2 -->
-    <script src="https://www.google.com/recaptcha/api.js" async defer></script>
 </head>
 <body>
 
     <!-- ==========================================
-         PANTALLA DE LOGIN (SEGURIDAD / INICIO DE SESION)
+         PANTALLA DE LOGIN (AUTENTICACIÓN PROTOTIPO)
          ========================================== -->
     <div id="login-overlay">
-
         <!-- Fondo animado con burbujas -->
         <div class="login-bg">
             <span></span><span></span><span></span>
             <span></span><span></span><span></span>
         </div>
 
-        <!-- Panel izquierdo: Branding del hotel -->
+        <!-- Panel izquierdo: Branding Corporativo -->
         <div class="login-branding">
             <div class="login-brand-content">
-                <div class="login-logo">&#9962;</div>
-                <h1>Hotel Andino <span>S.A.S.</span></h1>
-                <p>Sistema Integral de Gestion Hotelera</p>
+                <div class="login-logo">🏨</div>
+                <h1>Hotel Montserrat <span>S.A.S.</span></h1>
+                <p>Sistema Integral de Gestión Hotelera & Restaurante</p>
                 <div class="login-features">
-                    <div class="login-feature" data-icon="&#9719;">
-                        <span class="feature-icon">&#9719;</span>
-                        <span>Control de Huespedes</span>
+                    <div class="login-feature" data-icon="🛎️">
+                        <span>🛎️</span>
+                        <span>Gestión y Planes de Alimentación para Huéspedes</span>
                     </div>
-                    <div class="login-feature" data-icon="&#9749;">
-                        <span class="feature-icon">&#9749;</span>
-                        <span>Gestion de Comandas</span>
+                    <div class="login-feature" data-icon="🍽️">
+                        <span>🍽️</span>
+                        <span>Punto de Venta (POS) & Trazabilidad de Comandas</span>
                     </div>
-                    <div class="login-feature" data-icon="&#9874;">
-                        <span class="feature-icon">&#9874;</span>
-                        <span>Inventario Sistema STOP</span>
+                    <div class="login-feature" data-icon="🛑">
+                        <span>🛑</span>
+                        <span>Control de Inventario con Alerta Crítica (Sistema STOP)</span>
                     </div>
-                    <div class="login-feature" data-icon="&#36;">
-                        <span class="feature-icon">&#36;</span>
-                        <span>Flujo de Caja Diario</span>
+                    <div class="login-feature" data-icon="💰">
+                        <span>💰</span>
+                        <span>Flujo de Caja Diario, Pagos Múltiples y Cierres con Arqueo</span>
                     </div>
                 </div>
             </div>
         </div>
 
-        <!-- Panel derecho: Formulario de acceso -->
+        <!-- Panel derecho: Formulario de Acceso -->
         <div class="login-form-panel">
             <div class="login-card">
                 <div class="login-card-header">
-                    <div class="login-avatar">&#128274;</div>
-                    <h2>Iniciar Sesion</h2>
-                    <p>Ingresa tus credenciales de acceso</p>
+                    <div class="login-avatar">🔒</div>
+                    <h2>Acceso al Sistema</h2>
+                    <p>Ingresa tus credenciales autorizadas</p>
                 </div>
 
                 <div class="form-group">
                     <label for="login-usuario">Usuario</label>
-                    <input type="text" id="login-usuario" placeholder="Ingresa tu usuario" autocomplete="off">
+                    <input type="text" id="login-usuario" placeholder="Ej. admin" autocomplete="username">
                 </div>
 
                 <div class="form-group">
-                    <label for="login-password">Contrasena</label>
+                    <label for="login-password">Contraseña</label>
                     <div style="position: relative;">
                         <input type="password" id="login-password"
-                               onkeypress="if(event.key==='Enter')validarLogin()"
-                               placeholder="Ingresa tu contrasena"
-                               style="padding-right: 50px;">
-                        <button onclick="togglePassword()" id="btn-toggle-pw"
-                                style="position:absolute; right:14px; top:50%; transform:translateY(-50%);
-                                       background:none; border:none; color:var(--text-secondary);
-                                       cursor:pointer; font-size:1rem; padding:0;">
-                            Ver
+                               placeholder="Ingresa tu contraseña"
+                               autocomplete="current-password"
+                               style="padding-right: 95px;">
+                        <button type="button" data-action="toggle-pw" id="btn-toggle-pw"
+                                style="position:absolute; right:12px; top:50%; transform:translateY(-50%);
+                                       background:rgba(255,255,255,0.06); border:1px solid var(--border);
+                                       border-radius:4px; color:var(--text-secondary);
+                                       cursor:pointer; font-size:0.78rem; padding:4px 8px;">
+                            👁️ Ver
                         </button>
                     </div>
                 </div>
 
                 <div id="login-error"
-                     style="display:none; background: rgba(248,113,113,0.15);
-                            border: 1px solid var(--danger); border-radius: var(--radius);
-                            padding: 12px 16px; margin-bottom: 16px;
-                            color: var(--danger); font-size: 0.9rem; text-align:center;">
+                     style="display:none; background: var(--danger-bg);
+                            border: 1px solid var(--danger); border-radius: var(--radius-sm);
+                            padding: 10px 14px; margin-bottom: 14px;
+                            color: var(--danger); font-size: 0.86rem; text-align:center;">
                 </div>
 
-                <!-- GOOGLE reCAPTCHA v2 -->
-                <div class="captcha-box">
-                    <div class="captcha-header">
-                        <span>Verificacion de Seguridad</span>
-                    </div>
-                    <!-- Clave de PRUEBA oficial de Google - funciona en localhost -->
-                    <div class="g-recaptcha"
-                         data-sitekey="6LeIxAcTAAAAAJcZVRqyHh71UMIEGNQ_MXjiZKhI"
-                         data-theme="dark"
-                         data-size="normal">
-                    </div>
-                    <div id="captcha-error"
-                         style="display:none; color:var(--danger); font-size:0.8rem; margin-top:8px;">
-                        Por favor completa el CAPTCHA para continuar.
-                    </div>
-                </div>
-
-                <button class="btn" id="btn-login"
-                        style="width:100%; padding: 14px; font-size: 1rem; margin-top:8px;"
-                        onclick="validarLogin()">
+                <button class="btn" id="btn-login" data-action="login"
+                        style="width:100%; padding: 13px; font-size: 0.95rem; margin-top:6px;">
                     Ingresar al Sistema
                 </button>
 
-                <div class="login-hint">
-                    <small>Credenciales de acceso: <strong>admin</strong> / <strong>andino2024</strong></small>
+                <div class="login-hint" style="margin-top:14px; text-align:center; font-size:0.75rem; color:var(--text-muted);">
+                    <span>Seguridad PBKDF2-SHA256 (WebCrypto 310k iteraciones)</span>
                 </div>
             </div>
         </div>
     </div>
 
     <!-- ==========================================
-         BARRA LATERAL (Menu de Navegacion)
+         BARRA LATERAL (SIDEBAR DE NAVEGACIÓN)
          ========================================== -->
     <aside class="sidebar" id="app-sidebar" style="display: none;">
         <div class="sidebar-logo">
-            <h2>Andino</h2>
-            <p>Sistema de Gestion S.A.S.</p>
+            <span class="brand-icon">🏨</span>
+            <div class="sidebar-logo-text">
+                <h2>Hotel Montserrat</h2>
+                <p>Gestión Hotelera S.A.S.</p>
+            </div>
         </div>
 
         <nav class="nav-menu">
-            <!-- Cada boton llama a la funcion cambiarSeccion() de JavaScript -->
-            <div id="nav-dashboard" class="nav-item active" onclick="cambiarSeccion('dashboard')">
-                &#9783; Dashboard General
+            <div id="nav-dashboard" class="nav-item active" data-action="navegar" data-seccion="dashboard">
+                <span class="nav-icon">📊</span>
+                <span>Dashboard General</span>
             </div>
-            <div id="nav-huespedes" class="nav-item" onclick="cambiarSeccion('huespedes')">
-                &#9719; Gestion Huespedes
+            <div id="nav-huespedes" class="nav-item" data-action="navegar" data-seccion="huespedes">
+                <span class="nav-icon">🛎️</span>
+                <span>Gestión Huéspedes</span>
             </div>
-            <div id="nav-comandas" class="nav-item" onclick="cambiarSeccion('comandas')">
-                &#9749; Comandas y Pedidos
+            <div id="nav-comandas" class="nav-item" data-action="navegar" data-seccion="comandas">
+                <span class="nav-icon">🍽️</span>
+                <span>Comandas & POS</span>
             </div>
-            <div id="nav-inventario" class="nav-item" onclick="cambiarSeccion('inventario')">
-                &#9874; Inventario (STOP)
+            <div id="nav-inventario" class="nav-item" data-action="navegar" data-seccion="inventario">
+                <span class="nav-icon">🛑</span>
+                <span>Inventario STOP</span>
             </div>
-            <div id="nav-caja" class="nav-item" onclick="cambiarSeccion('caja')">
-                &#36; Flujo de Caja
+            <div id="nav-caja" class="nav-item" data-action="navegar" data-seccion="caja">
+                <span class="nav-icon">💰</span>
+                <span>Flujo de Caja</span>
+            </div>
+            <div id="nav-backup" class="nav-item" data-action="navegar" data-seccion="backup">
+                <span class="nav-icon">⚙️</span>
+                <span>Mantenimiento & Datos</span>
             </div>
         </nav>
+
+        <div class="user-profile">
+            <div class="user-avatar" id="user-avatar-badge">AD</div>
+            <div class="user-info">
+                <h4 id="user-display-name">Operador</h4>
+                <p id="user-role-badge">Rol</p>
+            </div>
+        </div>
     </aside>
 
     <!-- ==========================================
-         CONTENEDOR PRINCIPAL
+         CONTENEDOR PRINCIPAL DE VISTAS (APP-MAIN)
          ========================================== -->
     <main class="main-content" id="app-main" style="display: none;">
 
-        <header class="top-header">
-            <h1>Hotel Andino S.A.S.</h1>
+        <!-- Barra Superior (Header) -->
+        <header class="topbar">
+            <h1 id="topbar-title">Dashboard General</h1>
+            <div class="topbar-actions">
+                <span class="live-clock" id="live-clock">COT --:--</span>
+                <button class="btn btn-secondary btn-sm" id="btn-config-institucional" data-action="abrir-modal" data-modal="modal-configuracion" title="Configurar datos institucionales">
+                    🏢 Datos Hotel
+                </button>
+                <button class="btn btn-secondary btn-sm" id="btn-corte-topbar" data-action="abrir-cierre-caja" title="Realizar corte y resumen diario">
+                    📑 Corte Diario
+                </button>
+                <button class="btn btn-danger btn-sm" data-action="logout" title="Finalizar sesión">
+                    🚪 Salir
+                </button>
+            </div>
         </header>
 
-        <!-- Contenedor para las notificaciones (Toasts) -->
-        <div id="toast-container"></div>
+        <!-- Banner de Alerta Crítica STOP (Inventario) -->
+        <div id="alerta-stop" class="alert alert-danger" style="display: none;">
+            <div class="alert-content">
+                <span class="alert-icon">🛑</span>
+                <div>
+                    <h4 style="margin: 0; font-size: 1rem; font-weight: 700;">ALERTA CRÍTICA - SISTEMA STOP ACTIVADO</h4>
+                    <p style="margin: 4px 0 0 0; font-size: 0.88rem;" id="alerta-stop-mensaje">
+                        Hay insumos por debajo de su umbral mínimo de seguridad.
+                    </p>
+                </div>
+            </div>
+        </div>
 
         <!-- ==========================================
-             VISTA 1: DASHBOARD
+             VISTA 1: DASHBOARD GENERAL
              ========================================== -->
         <section id="seccion-dashboard" class="view-section active">
-            <h2 style="margin-top: 0;">Resumen Operativo</h2>
-            <p style="color: var(--text-secondary);">Metricas principales del hotel y restaurante del dia de hoy.</p>
+            <div class="section-header">
+                <div class="section-title">
+                    <h2>Panel de Control Operativo</h2>
+                    <p>Monitoreo en tiempo real del estado de ocupación, comensales y alertas de bodega.</p>
+                </div>
+                <div class="quick-actions" style="display: flex; gap: 8px;">
+                    <button class="btn" data-action="navegar" data-seccion="comandas">➕ Nueva Comanda</button>
+                    <button class="btn btn-secondary" data-action="navegar" data-seccion="huespedes">👤 Huéspedes</button>
+                    <button class="btn btn-secondary" id="btn-quick-prod" data-action="abrir-modal" data-modal="modal-nuevo-producto">📦 Producto</button>
+                    <button class="btn btn-secondary" id="btn-quick-cierre" data-action="abrir-cierre-caja">📑 Corte Caja</button>
+                </div>
+            </div>
 
             <div class="card-grid">
                 <div class="card">
-                    <h3>Platos Servidos Hoy</h3>
-                    <p class="value" id="dash-platos">0</p>
+                    <div class="card-top">
+                        <h3>Huéspedes Activos</h3>
+                        <span class="card-icon" style="color:var(--gold)">🏨</span>
+                    </div>
+                    <p class="value" id="dash-huespedes-total">0</p>
+                    <p class="card-subtext" id="dash-huespedes-comidas">0 comidas servidas hoy</p>
                 </div>
+
                 <div class="card">
-                    <h3>Ingresos del Dia (Externos)</h3>
-                    <p class="value" style="color: var(--success);" id="dash-ingresos">$0</p>
+                    <div class="card-top">
+                        <h3>Comandas de Hoy</h3>
+                        <span class="card-icon" style="color:var(--info)">🍽️</span>
+                    </div>
+                    <p class="value" id="dash-comandas-total">0</p>
+                    <p class="card-subtext" id="dash-comandas-subtext">0 cobros | 0 cortesías de plan</p>
                 </div>
+
                 <div class="card">
-                    <h3>Alertas de Inventario (STOP)</h3>
-                    <p class="value" id="dash-alertas">0</p>
+                    <div class="card-top">
+                        <h3>Ventas en Caja (Hoy)</h3>
+                        <span class="card-icon" style="color:var(--success)">💰</span>
+                    </div>
+                    <p class="value" style="color: var(--success);" id="dash-ventas-total">$ 0</p>
+                    <p class="card-subtext" id="dash-ventas-subtext">No incluye cargos a habitación</p>
+                </div>
+
+                <div class="card">
+                    <div class="card-top">
+                        <h3>Alertas de Inventario</h3>
+                        <span class="card-icon" style="color:var(--danger)">⚠️</span>
+                    </div>
+                    <p class="value" id="dash-alertas-total">0</p>
+                    <p class="card-subtext" id="dash-alertas-subtext">Productos en umbral crítico STOP</p>
+                </div>
+            </div>
+
+            <!-- Tabla Resumen Rápido -->
+            <div class="table-container" style="margin-top: 24px;">
+                <div class="table-toolbar">
+                    <h3 style="margin:0; font-size: 1.05rem;">Últimas Comandas Registradas</h3>
+                    <button class="btn btn-secondary btn-sm" data-action="navegar" data-seccion="comandas">Ver Todas las Comandas</button>
+                </div>
+                <div class="table-responsive">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>ID</th>
+                                <th>Hora</th>
+                                <th>Cliente / Hab.</th>
+                                <th>Plato / Detalle</th>
+                                <th>Tipo</th>
+                                <th>Método de Pago</th>
+                                <th>Valor</th>
+                                <th>Acción</th>
+                            </tr>
+                        </thead>
+                        <tbody id="tabla-dash-comandas">
+                            <!-- Inyectado por JS -->
+                        </tbody>
+                    </table>
                 </div>
             </div>
         </section>
 
         <!-- ==========================================
-             VISTA 2: HUESPEDES
+             VISTA 2: GESTIÓN DE HUÉSPEDES
              ========================================== -->
         <section id="seccion-huespedes" class="view-section">
-            <h2 style="margin-top: 0;">Gestion de Huespedes</h2>
+            <div class="section-header">
+                <div class="section-title">
+                    <h2>Control y Planes de Huéspedes</h2>
+                    <p>Registro de estancias, asignación de planes de alimentación y consumo de cupos diarios.</p>
+                </div>
+                <button class="btn" id="btn-reiniciar-comidas" data-action="reiniciar-comidas">🔄 Reiniciar Consumo Diario</button>
+            </div>
 
-            <!-- Formulario de Registro -->
-            <div class="card" style="margin-bottom: 30px;">
-                <h3>Registrar Nuevo Huesped</h3>
-                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px;">
+            <!-- Formulario de Registro de Huésped -->
+            <div class="card" style="margin-bottom: 26px;">
+                <h3 style="margin-bottom: 16px;">Registrar Entrada / Nuevo Huésped</h3>
+                <div class="form-grid-4">
                     <div class="form-group">
-                        <label>Nombre Completo</label>
-                        <input type="text" id="huesped-nombre" placeholder="Ej. Carlos Martinez">
+                        <label for="huesped-nombre">Nombre Completo *</label>
+                        <input type="text" id="huesped-nombre" placeholder="Ej. Juan Pérez">
                     </div>
                     <div class="form-group">
-                        <label>Documento de Identidad</label>
-                        <input type="text" id="huesped-doc" placeholder="Numero de cedula">
+                        <label for="huesped-doc">Documento / Pasaporte *</label>
+                        <input type="text" id="huesped-doc" placeholder="C.C. o Pasaporte">
                     </div>
                     <div class="form-group">
-                        <label>Habitacion</label>
-                        <input type="text" id="huesped-hab" placeholder="Ej. 101">
+                        <label for="huesped-hab">Habitación *</label>
+                        <input type="text" id="huesped-hab" placeholder="Ej. 101, 204B">
                     </div>
                     <div class="form-group">
-                        <label>Plan de Alimentacion</label>
-                        <!-- El 'value' define cuantas comidas gratis tiene el huesped -->
+                        <label for="huesped-plan">Plan de Alimentación *</label>
                         <select id="huesped-plan">
-                            <option value="3">Pension Completa (3 comidas)</option>
-                            <option value="2">Media Pension (2 comidas)</option>
-                            <option value="1">Alojamiento y Desayuno (1 comida)</option>
-                            <option value="0">Solo Alojamiento (0 comidas)</option>
+                            <option value="3">Pensión Completa (3 Comidas)</option>
+                            <option value="2">Media Pensión (2 Comidas)</option>
+                            <option value="1">Alojamiento y Desayuno (1 Comida)</option>
+                            <option value="0">Solo Alojamiento (0 Comidas)</option>
                         </select>
                     </div>
                 </div>
-                <button class="btn" onclick="registrarHuesped()">Guardar Huesped</button>
+                <button class="btn" data-action="guardar-huesped" style="margin-top: 10px;">Guardar Huésped</button>
             </div>
 
-            <!-- Tabla de Huespedes -->
-            <h3>Huespedes Actuales</h3>
-            <table>
-                <thead>
-                    <tr>
-                        <th>Nombre</th>
-                        <th>Documento</th>
-                        <th>Habitacion</th>
-                        <th>Plan</th>
-                        <th>Consumo de Comidas</th>
-                    </tr>
-                </thead>
-                <tbody id="tabla-huespedes">
-                    <!-- Rellenado con JavaScript -->
-                </tbody>
-            </table>
+            <!-- Tabla de Huéspedes -->
+            <div class="table-container">
+                <div class="table-toolbar">
+                    <div class="search-box">
+                        <span>🔍</span>
+                        <input type="text" id="filtro-huespedes" placeholder="Buscar por nombre, documento o habitación...">
+                    </div>
+                    <div style="font-size:0.85rem; color:var(--text-secondary);">
+                        Total Huéspedes: <strong id="contador-huespedes" style="color:var(--gold);">0</strong>
+                    </div>
+                </div>
+                <div class="table-responsive">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Nombre</th>
+                                <th>Documento</th>
+                                <th>Habitación</th>
+                                <th>Plan Contratado</th>
+                                <th>Consumo Hoy</th>
+                                <th>Estado</th>
+                                <th>Acciones</th>
+                            </tr>
+                        </thead>
+                        <tbody id="tabla-huespedes">
+                            <!-- Inyectado por JS -->
+                        </tbody>
+                    </table>
+                </div>
+            </div>
         </section>
 
         <!-- ==========================================
-             VISTA 3: COMANDAS
+             VISTA 3: COMANDAS Y PEDIDOS (POS)
              ========================================== -->
         <section id="seccion-comandas" class="view-section">
-            <h2 style="margin-top: 0;">Registro de Comandas</h2>
+            <div class="section-header">
+                <div class="section-title">
+                    <h2>Punto de Venta & Comandas</h2>
+                    <p>Registro de órdenes del restaurante con trazabilidad del operador autenticado y validación de planes.</p>
+                </div>
+            </div>
 
-            <div class="card" style="margin-bottom: 30px; border-left: 4px solid var(--gold);">
-                <h3>Registrar Pedido</h3>
-                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px;">
+            <!-- Formulario de Registro de Comanda -->
+            <div class="card" style="margin-bottom: 26px; border-left: 4px solid var(--gold);">
+                <h3 style="margin-bottom: 16px;">Tomar Nueva Comanda</h3>
+                <div class="form-grid-3">
 
                     <div class="form-group">
-                        <label>Tipo de Cliente</label>
-                        <select id="comanda-tipo" onchange="toggleTipoCliente()">
-                            <option value="huesped">Huesped (Descuenta de su Plan)</option>
-                            <option value="externo">Cliente Externo (Se Cobra de Inmediato)</option>
+                        <label for="comanda-tipo">Tipo de Cliente</label>
+                        <select id="comanda-tipo">
+                            <option value="huesped">Huésped (Descuenta del Plan o Carga a Folio)</option>
+                            <option value="externo">Cliente Externo (Cobro Inmediato)</option>
                         </select>
                     </div>
 
-                    <!-- Si es Huesped -->
+                    <!-- Si es Huésped -->
                     <div class="form-group" id="grupo-huesped">
-                        <label>Seleccionar Huesped</label>
+                        <label for="comanda-huesped">Seleccionar Huésped Activo</label>
                         <select id="comanda-huesped">
-                            <!-- Rellenado por JS -->
+                            <!-- Llenado por JS -->
                         </select>
+                        <small id="comanda-huesped-info" style="display:block; margin-top:4px; font-size:0.78rem; color:var(--gold);"></small>
                     </div>
 
                     <!-- Si es Externo -->
                     <div class="form-group" id="grupo-externo" style="display: none;">
-                        <label>Nombre del Cliente Externo</label>
-                        <input type="text" id="comanda-externo" placeholder="Nombre completo">
+                        <label for="comanda-externo">Nombre del Cliente Externo</label>
+                        <input type="text" id="comanda-externo" placeholder="Nombre o Consumidor Final">
+                    </div>
+
+                    <!-- Método de Pago -->
+                    <div class="form-group" id="grupo-metodo-pago" style="display: none;">
+                        <label for="comanda-pago">Método de Pago</label>
+                        <select id="comanda-pago">
+                            <option value="EFECTIVO">Efectivo</option>
+                            <option value="TARJETA">Tarjeta (Débito / Crédito)</option>
+                            <option value="TRANSFERENCIA">Transferencia (Nequi / Bancolombia / Daviplata)</option>
+                            <option value="CARGO_HABITACION">Cargar a Habitación / Folio</option>
+                        </select>
                     </div>
 
                     <div class="form-group">
-                        <label>Tipo de Comida</label>
+                        <label for="comanda-comida">Momento de Comida</label>
                         <select id="comanda-comida">
                             <option value="Desayuno">Desayuno</option>
                             <option value="Almuerzo">Almuerzo</option>
                             <option value="Cena">Cena</option>
+                            <option value="Bebida / Snack">Bebida / Snack</option>
                         </select>
                     </div>
 
                     <div class="form-group">
-                        <label>Plato a Servir</label>
-                        <!-- Se llena con los productos del inventario en el JS -->
+                        <label for="comanda-plato">Plato / Producto con Existencia</label>
                         <select id="comanda-plato"></select>
                     </div>
 
                     <div class="form-group">
-                        <label>Mesero Asignado</label>
-                        <select id="comanda-mesero">
-                            <option value="Mesero Carlos">Mesero Carlos</option>
-                            <option value="Mesero Ana">Mesero Ana</option>
-                            <option value="Mesero Luis">Mesero Luis</option>
+                        <label for="comanda-cantidad">Cantidad</label>
+                        <input type="number" id="comanda-cantidad" min="1" max="20" value="1">
+                    </div>
+
+                    <!-- Bloque B-5: Mesero asignado = usuario autenticado, solo lectura -->
+                    <div class="form-group">
+                        <label for="comanda-mesero">Operador / Mesero</label>
+                        <input type="text" id="comanda-mesero" readonly
+                               style="background: rgba(255,255,255,0.06); cursor: not-allowed; color: var(--gold);"
+                               value="Operador de Turno">
+                    </div>
+
+                    <div class="form-group">
+                        <label for="comanda-mesa">Mesa / Ubicación</label>
+                        <select id="comanda-mesa">
+                            <option value="Mesa 1">Mesa 1</option>
+                            <option value="Mesa 2">Mesa 2</option>
+                            <option value="Mesa 3">Mesa 3</option>
+                            <option value="Mesa 4">Mesa 4</option>
+                            <option value="Terraza">Terraza</option>
+                            <option value="Habitación">Servicio a la Habitación</option>
+                            <option value="Barra">Barra</option>
                         </select>
                     </div>
+
+                    <div class="form-group" style="display: flex; flex-direction: column; justify-content: center;">
+                        <span style="font-size:0.85rem; color:var(--text-secondary);">Total a Facturar:</span>
+                        <span id="comanda-total-preview" style="font-size:1.6rem; font-weight:800; color:var(--gold);">$ 0</span>
+                    </div>
                 </div>
-                <button class="btn" onclick="registrarComanda()">Confirmar Comanda</button>
+
+                <button class="btn" data-action="registrar-comanda">Confirmar y Registrar Comanda</button>
             </div>
 
             <!-- Tabla de Comandas -->
-            <h3>Comandas del Dia</h3>
-            <table>
-                <thead>
-                    <tr>
-                        <th>Hora</th>
-                        <th>Cliente</th>
-                        <th>Mesero</th>
-                        <th>Comida</th>
-                        <th>Plato</th>
-                        <th>Tipo (Cortesia / Cobro)</th>
-                    </tr>
-                </thead>
-                <tbody id="tabla-comandas">
-                    <!-- Rellenado con JavaScript -->
-                </tbody>
-            </table>
+            <div class="table-container">
+                <div class="table-toolbar">
+                    <div class="search-box">
+                        <span>🔍</span>
+                        <input type="text" id="filtro-comandas" placeholder="Buscar por cliente, mesa, mesero o plato...">
+                    </div>
+                    <div style="font-size:0.85rem; color:var(--text-secondary);">
+                        Total Comandas Hoy: <strong id="contador-comandas" style="color:var(--gold);">0</strong>
+                    </div>
+                </div>
+                <div class="table-responsive">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Hora</th>
+                                <th>Mesa / Hab.</th>
+                                <th>Cliente</th>
+                                <th>Plato / Cantidad</th>
+                                <th>Momento</th>
+                                <th>Tipo</th>
+                                <th>Método de Pago</th>
+                                <th>Total</th>
+                                <th>Operador</th>
+                                <th>Acciones</th>
+                            </tr>
+                        </thead>
+                        <tbody id="tabla-comandas">
+                            <!-- Inyectado por JS -->
+                        </tbody>
+                    </table>
+                </div>
+            </div>
         </section>
 
         <!-- ==========================================
-             VISTA 4: INVENTARIO
+             VISTA 4: CONTROL DE INVENTARIO (SISTEMA STOP)
              ========================================== -->
         <section id="seccion-inventario" class="view-section">
-            <h2 style="margin-top: 0;">Inventario (Sistema STOP)</h2>
-            <p style="color: var(--text-secondary);">
-                Cuando el stock de un producto llegue a menos de 5 unidades, el sistema
-                lanzara una alerta roja (STOP) para no permitir ventas hasta recargar.
-            </p>
+            <div class="section-header">
+                <div class="section-title">
+                    <h2>Inventario Crítico & Sistema STOP</h2>
+                    <p>Supervisión de stock disponible, alertas de abastecimiento y costos de insumos.</p>
+                </div>
+                <button class="btn" id="btn-nuevo-producto-top" data-action="abrir-modal" data-modal="modal-nuevo-producto">
+                    ➕ Agregar Producto
+                </button>
+            </div>
 
-            <table>
-                <thead>
-                    <tr>
-                        <th>Producto</th>
-                        <th>Stock Actual</th>
-                        <th>Unidad</th>
-                        <th>Costo Aprox.</th>
-                        <th>Estado</th>
-                        <th>Accion</th>
-                    </tr>
-                </thead>
-                <tbody id="tabla-inventario">
-                    <!-- Rellenado con JavaScript -->
-                </tbody>
-            </table>
+            <!-- Tabla de Inventario -->
+            <div class="table-container">
+                <div class="table-toolbar">
+                    <div class="search-box">
+                        <span>🔍</span>
+                        <input type="text" id="filtro-inventario" placeholder="Buscar producto por nombre o categoría...">
+                    </div>
+                    <div style="display:flex; gap:12px; font-size:0.82rem; align-items:center;">
+                        <span><span class="badge badge-success">●</span> Óptimo</span>
+                        <span><span class="badge badge-warning">●</span> Stock Bajo</span>
+                        <span><span class="badge badge-danger">●</span> STOP Crítico</span>
+                    </div>
+                </div>
+                <div class="table-responsive">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Estado</th>
+                                <th>Producto / Plato</th>
+                                <th>Categoría</th>
+                                <th>Stock Actual</th>
+                                <th>Stock Mínimo</th>
+                                <th>Costo Unit.</th>
+                                <th>Precio Venta</th>
+                                <th>Acciones</th>
+                            </tr>
+                        </thead>
+                        <tbody id="tabla-inventario">
+                            <!-- Inyectado por JS -->
+                        </tbody>
+                    </table>
+                </div>
+            </div>
         </section>
 
         <!-- ==========================================
-             VISTA 5: CAJA DIARIA
+             VISTA 5: FLUJO DE CAJA & FACTURACIÓN
              ========================================== -->
         <section id="seccion-caja" class="view-section">
-            <h2 style="margin-top: 0;">Flujo de Caja Diario</h2>
-
-            <div class="card-grid">
-                <div class="card" style="border-left: 4px solid var(--success);">
-                    <h3>Total Recaudado (Ventas Externas)</h3>
-                    <p class="value" style="color: var(--success);" id="caja-total">$0</p>
+            <div class="section-header">
+                <div class="section-title">
+                    <h2>Flujo de Caja Diario & Facturación</h2>
+                    <p>Auditoría de ingresos en caja, cuentas por cobrar (Folios) y acta de cierre con arqueo físico.</p>
                 </div>
-                <div class="card" style="border-left: 4px solid var(--gold);">
-                    <h3>Platos Servidos (Cortesia Huespedes)</h3>
-                    <p class="value" id="caja-cortesias">0</p>
+                <div style="display:flex; gap:10px;">
+                    <button class="btn btn-secondary" data-action="exportar-csv">📥 Exportar CSV</button>
+                    <button class="btn" id="btn-cierre-caja-section" data-action="abrir-cierre-caja">📑 Resumen de Cierre</button>
                 </div>
             </div>
 
-            <h3 style="margin-top: 30px;">Movimientos de Ingresos Hoy</h3>
-            <table>
-                <thead>
-                    <tr>
-                        <th>Hora</th>
-                        <th>Descripcion</th>
-                        <th>Ingreso</th>
-                    </tr>
-                </thead>
-                <tbody id="tabla-caja">
-                    <!-- Rellenado con JavaScript -->
-                </tbody>
-            </table>
+            <!-- Tarjetas de Caja -->
+            <div class="card-grid">
+                <div class="card" style="border-left: 4px solid var(--success);">
+                    <div class="card-top">
+                        <h3>Total Recaudado en Caja</h3>
+                        <span class="card-icon" style="color:var(--success)">💵</span>
+                    </div>
+                    <p class="value" style="color: var(--success);" id="caja-total">$ 0</p>
+                    <p class="card-subtext">Efectivo + Pagos Digitales liquidados hoy</p>
+                </div>
+
+                <div class="card" style="border-left: 4px solid var(--warning);">
+                    <div class="card-top">
+                        <h3>Cargos a Habitación (Folios)</h3>
+                        <span class="card-icon" style="color:var(--warning)">📑</span>
+                    </div>
+                    <p class="value" style="color: var(--warning);" id="caja-folios">$ 0</p>
+                    <p class="card-subtext">Cuentas por cobrar en recepción (Check-out)</p>
+                </div>
+
+                <div class="card">
+                    <div class="card-top">
+                        <h3>Efectivo en Caja</h3>
+                        <span class="card-icon">🪙</span>
+                    </div>
+                    <p class="value" id="caja-efectivo">$ 0</p>
+                    <p class="card-subtext">Monto físico esperado para arqueo</p>
+                </div>
+
+                <div class="card">
+                    <div class="card-top">
+                        <h3>Tarjetas / Transferencias</h3>
+                        <span class="card-icon" style="color:var(--info)">💳</span>
+                    </div>
+                    <p class="value" style="color:var(--info)" id="caja-electronico">$ 0</p>
+                    <p class="card-subtext">Datafono + Nequi / Bancolombia / Daviplata</p>
+                </div>
+            </div>
+
+            <!-- Tabla de Movimientos de Caja -->
+            <div class="table-container">
+                <div class="table-toolbar">
+                    <h3 style="margin:0; font-size:1.05rem;">Movimientos Detallados de Hoy</h3>
+                </div>
+                <div class="table-responsive">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Hora</th>
+                                <th>Descripción / Cliente</th>
+                                <th>Método de Pago</th>
+                                <th>Tipo</th>
+                                <th>Monto</th>
+                            </tr>
+                        </thead>
+                        <tbody id="tabla-caja">
+                            <!-- Inyectado por JS -->
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- Historial de Cierres de Caja (Bloque D-3) -->
+            <div class="table-container" style="margin-top:28px;">
+                <div class="table-toolbar">
+                    <h3 style="margin:0; font-size:1.05rem;">Historial de Cierres Oficiales de Caja</h3>
+                </div>
+                <div class="table-responsive">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Fecha</th>
+                                <th>Hora</th>
+                                <th>Operador</th>
+                                <th>Comandas</th>
+                                <th>Total Caja</th>
+                                <th>Cargos Hab. (Folios)</th>
+                                <th>Efectivo Contado</th>
+                                <th>Diferencia (Arqueo)</th>
+                                <th>Estado / Motivo</th>
+                            </tr>
+                        </thead>
+                        <tbody id="tabla-cierres-historial">
+                            <!-- Inyectado por JS -->
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </section>
+
+        <!-- ==========================================
+             VISTA 6: SISTEMA & BACKUPS
+             ========================================== -->
+        <section id="seccion-backup" class="view-section">
+            <div class="section-header">
+                <div class="section-title">
+                    <h2>Mantenimiento y Copias de Seguridad</h2>
+                    <p>Exportación e importación con validación estricta todo-o-nada y respaldo automático previo.</p>
+                </div>
+            </div>
+
+            <div class="card-grid">
+                <div class="card">
+                    <div class="card-top">
+                        <h3>Descargar Copia de Seguridad</h3>
+                        <span class="card-icon">💾</span>
+                    </div>
+                    <p style="font-size:0.86rem; color:var(--text-secondary); margin: 12px 0 16px 0;">
+                        Genera un archivo JSON con la totalidad de huéspedes, inventario, comandas y cierres.
+                    </p>
+                    <button class="btn" data-action="exportar-backup">💾 Descargar Backup JSON</button>
+                </div>
+
+                <div class="card">
+                    <div class="card-top">
+                        <h3>Restaurar desde Archivo</h3>
+                        <span class="card-icon">📂</span>
+                    </div>
+                    <p style="font-size:0.86rem; color:var(--text-secondary); margin: 12px 0 16px 0;">
+                        Validación estricta de estructura, unicidad e integridad referencial antes de importar.
+                    </p>
+                    <input type="file" id="input-archivo-backup" accept=".json" style="display: none;">
+                    <button class="btn btn-secondary" id="btn-importar-backup" data-action="disparar-importar-backup">📂 Cargar Archivo JSON</button>
+                </div>
+
+                <div class="card">
+                    <div class="card-top">
+                        <h3>Restablecer de Fábrica</h3>
+                        <span class="card-icon" style="color:var(--danger)">⚠️</span>
+                    </div>
+                    <p style="font-size:0.86rem; color:var(--text-secondary); margin: 12px 0 16px 0;">
+                        Devuelve la base de datos a sus valores iniciales. Exige reautenticación con contraseña de Administrador.
+                    </p>
+                    <button class="btn btn-danger" id="btn-restablecer-sistema" data-action="restablecer-sistema">⚠️ Restablecer Sistema</button>
+                </div>
+            </div>
         </section>
 
     </main>
-/*hola mundo*
- 
-    <!-- Vinculamos el Ãºnico archivo de JavaScript que contiene toda la lÃ³gica -->
-    <script src="js/app.js"></script>
+
+    <!-- ==========================================
+         MODALES GLOBALES DEL SISTEMA
+         ========================================== -->
+
+    <!-- MODAL 1: TICKET / COMPROBANTE DE COMANDAS (Bloque D-4) -->
+    <div id="modal-ticket" class="modal-overlay">
+        <div class="modal-dialog">
+            <div class="modal-header">
+                <h3>Comprobante Interno de Restaurante</h3>
+                <button class="modal-close-btn" data-action="cerrar-modal" data-modal="modal-ticket">&times;</button>
+            </div>
+            <div class="modal-body">
+                <div id="ticket-imprimible" class="receipt-paper">
+                    <!-- Rellenado con JavaScript -->
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-secondary" data-action="cerrar-modal" data-modal="modal-ticket">Cerrar</button>
+                <button class="btn" data-action="imprimir-ticket">🖨️ Imprimir Comprobante</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- MODAL 2: NUEVO PRODUCTO DE INVENTARIO -->
+    <div id="modal-nuevo-producto" class="modal-overlay">
+        <div class="modal-dialog">
+            <div class="modal-header">
+                <h3>Agregar Producto al Inventario</h3>
+                <button class="modal-close-btn" data-action="cerrar-modal" data-modal="modal-nuevo-producto">&times;</button>
+            </div>
+            <div class="modal-body">
+                <div class="form-group">
+                    <label for="prod-nombre">Nombre del Producto / Plato *</label>
+                    <input type="text" id="prod-nombre" placeholder="Ej. Lasaña Mixta">
+                </div>
+                <div class="form-grid-2">
+                    <div class="form-group">
+                        <label for="prod-categoria">Categoría *</label>
+                        <select id="prod-categoria">
+                            <option value="Platos Fuertes">Platos Fuertes</option>
+                            <option value="Carnes">Carnes</option>
+                            <option value="Pescados">Pescados</option>
+                            <option value="Aves">Aves</option>
+                            <option value="Desayunos">Desayunos</option>
+                            <option value="Bebidas">Bebidas</option>
+                            <option value="Postres">Postres</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="prod-stock-min">Stock Mínimo (Umbral STOP) *</label>
+                        <input type="number" id="prod-stock-min" min="1" value="5">
+                    </div>
+                    <div class="form-group">
+                        <label for="prod-stock">Stock Inicial *</label>
+                        <input type="number" id="prod-stock" min="1" value="10">
+                    </div>
+                    <div class="form-group">
+                        <label for="prod-costo">Costo Unitario ($) *</label>
+                        <input type="number" id="prod-costo" min="0" value="8000">
+                    </div>
+                    <div class="form-group" style="grid-column: span 2;">
+                        <label for="prod-precio">Precio de Venta al Público ($) *</label>
+                        <input type="number" id="prod-precio" min="0" value="25000">
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-secondary" data-action="cerrar-modal" data-modal="modal-nuevo-producto">Cancelar</button>
+                <button class="btn" data-action="guardar-nuevo-producto">Guardar en Inventario</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- MODAL 3: SURTIR PRODUCTO (REABASTECIMIENTO) -->
+    <div id="modal-surtir" class="modal-overlay">
+        <div class="modal-dialog">
+            <div class="modal-header">
+                <h3>Surtir / Reabastecer Inventario</h3>
+                <button class="modal-close-btn" data-action="cerrar-modal" data-modal="modal-surtir">&times;</button>
+            </div>
+            <div class="modal-body">
+                <p id="surtir-producto-info" style="font-weight:600; color:var(--gold); margin-bottom:12px;"></p>
+                <input type="hidden" id="surtir-producto-id">
+                <div class="form-group">
+                    <label for="surtir-cantidad">Cantidad a Ingresar *</label>
+                    <input type="number" id="surtir-cantidad" min="1" max="1000" value="10">
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-secondary" data-action="cerrar-modal" data-modal="modal-surtir">Cancelar</button>
+                <button class="btn" data-action="confirmar-surtir">Confirmar Ingreso</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- MODAL 4: ACTA DE CIERRE DE CAJA DIARIO CON ARQUEO (Bloque D-3) -->
+    <div id="modal-cierre" class="modal-overlay">
+        <div class="modal-dialog">
+            <div class="modal-header">
+                <h3>Acta de Cierre de Caja Diario</h3>
+                <button class="modal-close-btn" data-action="cerrar-modal" data-modal="modal-cierre">&times;</button>
+            </div>
+            <div class="modal-body" id="cierre-body-content">
+                <!-- Rellenado por JS -->
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-secondary" data-action="cerrar-modal" data-modal="modal-cierre">Cancelar</button>
+                <button class="btn" data-action="confirmar-cierre-caja">✅ Confirmar Cierre Diario</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- MODAL 5: CONSUMO EXPRESS ASISTIDO (Bloque D-2) -->
+    <div id="modal-consumo-express" class="modal-overlay">
+        <div class="modal-dialog">
+            <div class="modal-header">
+                <h3>Consumo Express para Huésped</h3>
+                <button class="modal-close-btn" data-action="cerrar-modal" data-modal="modal-consumo-express">&times;</button>
+            </div>
+            <div class="modal-body">
+                <div class="form-group">
+                    <label>Huésped Seleccionado:</label>
+                    <p id="express-huesped-detalle" style="font-weight:600; color:var(--gold); margin:4px 0 12px 0;"></p>
+                    <input type="hidden" id="express-huesped-id">
+                </div>
+                <div class="form-group">
+                    <label for="express-momento">Momento de Comida *</label>
+                    <select id="express-momento">
+                        <option value="Desayuno">Desayuno</option>
+                        <option value="Almuerzo">Almuerzo</option>
+                        <option value="Cena">Cena</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="express-plato">Plato con Stock Disponible *</label>
+                    <select id="express-plato"></select>
+                </div>
+                <div class="form-group">
+                    <label for="express-cantidad">Cantidad a Servir *</label>
+                    <input type="number" id="express-cantidad" min="1" max="10" value="1">
+                    <small style="display:block; margin-top:4px; color:var(--text-muted); font-size:0.75rem;">
+                        * Si la cantidad supera el cupo restante de hoy, el excedente se cargará a folio.
+                    </small>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-secondary" data-action="cerrar-modal" data-modal="modal-consumo-express">Cancelar</button>
+                <button class="btn" data-action="confirmar-consumo-express">Confirmar Consumo</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- MODAL 6: REAUTENTICACIÓN PARA ACCIONES DESTRUCTIVAS (Bloque B-6) -->
+    <div id="modal-reautenticacion" class="modal-overlay">
+        <div class="modal-dialog" style="max-width:440px;">
+            <div class="modal-header">
+                <h3 id="reauth-titulo" style="color:var(--danger)">Confirmación de Seguridad</h3>
+                <button class="modal-close-btn" data-action="cerrar-modal" data-modal="modal-reautenticacion">&times;</button>
+            </div>
+            <div class="modal-body">
+                <p id="reauth-mensaje" style="font-size:0.88rem; color:var(--text-secondary); margin-bottom:14px;"></p>
+                <div class="form-group">
+                    <label for="reauth-password">Ingresa tu contraseña para autorizar:</label>
+                    <input type="password" id="reauth-password" placeholder="Tu contraseña actual" autocomplete="current-password">
+                </div>
+                <div id="reauth-error" style="display:none; color:var(--danger); font-size:0.82rem; margin-top:8px;"></div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-secondary" data-action="cerrar-modal" data-modal="modal-reautenticacion">Cancelar</button>
+                <button class="btn btn-danger" id="btn-confirmar-reauth" data-action="confirmar-reautenticacion">Autorizar Acción</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- MODAL 7: ANULACIÓN DE COMANDA CON MOTIVO OBLIGATORIO (Bloque D-5) -->
+    <div id="modal-anular-comanda" class="modal-overlay">
+        <div class="modal-dialog" style="max-width:440px;">
+            <div class="modal-header">
+                <h3 style="color:var(--danger)">Anular Comanda Registrada</h3>
+                <button class="modal-close-btn" data-action="cerrar-modal" data-modal="modal-anular-comanda">&times;</button>
+            </div>
+            <div class="modal-body">
+                <p id="anular-comanda-detalle" style="font-size:0.88rem; color:var(--text-secondary); margin-bottom:12px;"></p>
+                <input type="hidden" id="anular-comanda-id">
+                <div class="form-group">
+                    <label for="anular-motivo">Motivo Obligatorio de Anulación *</label>
+                    <textarea id="anular-motivo" rows="3" placeholder="Ej. Error en digitación por parte de mesero, cliente desistió de la orden" style="width:100%; border-radius:var(--radius-sm); border:1px solid var(--border); background:var(--bg-secondary); color:var(--text); padding:8px;"></textarea>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-secondary" data-action="cerrar-modal" data-modal="modal-anular-comanda">Cancelar</button>
+                <button class="btn btn-danger" data-action="confirmar-anulacion-comanda">Confirmar Anulación</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- MODAL 8: DATOS INSTITUCIONALES / CONFIGURACIÓN (Bloque D-4) -->
+    <div id="modal-configuracion" class="modal-overlay">
+        <div class="modal-dialog" style="max-width:500px;">
+            <div class="modal-header">
+                <h3>Configuración Institucional del Hotel</h3>
+                <button class="modal-close-btn" data-action="cerrar-modal" data-modal="modal-configuracion">&times;</button>
+            </div>
+            <div class="modal-body">
+                <div class="form-group">
+                    <label for="config-razon-social">Razón Social *</label>
+                    <input type="text" id="config-razon-social" value="Hotel Montserrat S.A.S.">
+                </div>
+                <div class="form-group">
+                    <label for="config-nit">NIT / Identificación Tributaria (DIAN)</label>
+                    <input type="text" id="config-nit" placeholder="Ej. 901.458.789-0 (Dejar en blanco si no está asignado)">
+                </div>
+                <div class="form-group">
+                    <label for="config-direccion">Dirección Física</label>
+                    <input type="text" id="config-direccion" placeholder="Ej. Carrera 7 # 12-45, Bogotá, Colombia">
+                </div>
+                <div class="form-group">
+                    <label for="config-telefono">Teléfono de Contacto</label>
+                    <input type="text" id="config-telefono" placeholder="Ej. (601) 345-6789">
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-secondary" data-action="cerrar-modal" data-modal="modal-configuracion">Cancelar</button>
+                <button class="btn" data-action="guardar-configuracion">Guardar Configuración</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Contenedor Toast de Notificaciones -->
+    <div id="toast-container" class="toast-container"></div>
+
+    <!-- Carga como Módulo ES Puro -->
+    <script type="module" src="js/app.js"></script>
 </body>
 </html>

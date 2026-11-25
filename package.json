@@ -1,0 +1,12 @@
+{
+  "name": "hotel-montserrat-system",
+  "version": "1.0.0",
+  "description": "Sistema Integral de Gestión Hotelera & Restaurante POS - Hotel Montserrat S.A.S.",
+  "type": "module",
+  "scripts": {
+    "test": "node --test tests/*.test.js backend/tests/*.test.js",
+    "test:frontend": "node --test tests/*.test.js",
+    "test:backend": "node --test backend/tests/*.test.js",
+    "server": "node backend/src/server.js"
+  }
+}
